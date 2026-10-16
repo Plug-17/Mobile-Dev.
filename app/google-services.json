@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "183238663312",
+    "project_id": "project-2f356",
+    "storage_bucket": "project-2f356.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183238663312:android:b6b076094c5222d5284c15",
+        "android_client_info": {
+          "package_name": "com.example.hotelbooking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183238663312-anqnet3tknu70cl7r3sros8rtk0rpt82.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hotelbooking",
+            "certificate_hash": "281fcf5236d12b60abb46019713db74771baf8f8"
+          }
+        },
+        {
+          "client_id": "183238663312-93h33tf425gqsro5c5enne8q088297c2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeXYRHzciu_x6FJ8V2UtwsnQ6x2zsNi_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183238663312-93h33tf425gqsro5c5enne8q088297c2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
