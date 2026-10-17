@@ -16,6 +16,7 @@ data class Room(
     val roomType: String = "",
     val price: Double = 0.0,
     val capacity: Int = 2,
+
 )
 data class Booking(
     val bookingId: String = "",

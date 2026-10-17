@@ -13,8 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.hotelbooking.Booking
-import com.example.hotelbooking.HotelViewModel
 
 @Composable
 fun BookingHistoryScreen(modifier: Modifier = Modifier, hotelVM: HotelViewModel = viewModel()) {
