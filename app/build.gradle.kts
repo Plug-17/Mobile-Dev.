@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
+
     // Firebase
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:35.0.1"))
