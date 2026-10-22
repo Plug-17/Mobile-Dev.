@@ -1,19 +1,21 @@
+
 package com.example.hotelbooking
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,10 +37,8 @@ fun HomeScreen(
     val hotels by hotelVM.hotels.collectAsState()
     val isLoading by hotelVM.isLoading.collectAsState()
     val error by hotelVM.error.collectAsState()
-    val rooms by hotelVM.rooms.collectAsState()
 
     var selectedHotel by remember { mutableStateOf<Hotel?>(null) }
-    var selectedRoom by remember { mutableStateOf<Room?>(null) }
     var checkInDate by remember { mutableStateOf("") }
     var nightsText by remember { mutableStateOf("1") }
     var bookingMessage by remember { mutableStateOf("") }
@@ -50,12 +50,10 @@ fun HomeScreen(
     }
 
     LaunchedEffect(selectedHotel?.id) {
-        selectedHotel?.let { hotel ->
-            selectedRoom = null
+        if (selectedHotel != null) {
             checkInDate = ""
             nightsText = "1"
             bookingMessage = ""
-            hotelVM.fetchRoomsForHotel(hotel.id)
         }
     }
 
@@ -88,13 +86,17 @@ fun HomeScreen(
 
         if (error != null) {
             item {
-                Text(
-                    text = "Failed to load hotels: $error",
-                    color = MaterialTheme.colorScheme.error
-                )
+                Column {
+                    Text(
+                        text = "Failed to load hotels: $error",
+                        color = MaterialTheme.colorScheme.error
+                    )
 
-                TextButton(onClick = { hotelVM.fetchHotels() }) {
-                    Text("Try Again")
+                    TextButton(
+                        onClick = { hotelVM.fetchHotels() }
+                    ) {
+                        Text("Try Again")
+                    }
                 }
             }
         }
@@ -120,7 +122,9 @@ fun HomeScreen(
                     defaultElevation = 4.dp
                 )
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
+                Column(
+                    modifier = Modifier.padding(12.dp)
+                ) {
                     AsyncImage(
                         model = hotel.imageUrl,
                         contentDescription = hotel.name,
@@ -145,8 +149,8 @@ fun HomeScreen(
                     )
 
                     Text(
-                        text = "Tap to book",
-                        color = MaterialTheme.colorScheme.primary
+                        text = "Look Details",
+                        color = Color.Blue
                     )
                 }
             }
@@ -156,7 +160,9 @@ fun HomeScreen(
     selectedHotel?.let { hotel ->
         AlertDialog(
             onDismissRequest = {
-                if (!isBooking) selectedHotel = null
+                if (!isBooking) {
+                    selectedHotel = null
+                }
             },
             title = {
                 Text("Book ${hotel.name}")
@@ -167,7 +173,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .heightIn(max = 450.dp)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     AsyncImage(
                         model = hotel.imageUrl,
@@ -183,90 +189,38 @@ fun HomeScreen(
 
                     HorizontalDivider()
 
-                    Text(
-                        text = "Select Room",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    if (rooms.isEmpty()) {
-                        Text("No rooms available for this hotel.")
-                    } else {
-                        rooms.forEach { room ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        selectedRoom = room
-                                        bookingMessage = ""
-                                    }
-                                    .padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = selectedRoom?.roomId == room.roomId,
-                                    onClick = {
-                                        selectedRoom = room
-                                        bookingMessage = ""
-                                    }
-                                )
-
-                                Column {
-                                    Text(
-                                        text = room.roomType,
-                                        fontWeight = FontWeight.Medium
-                                    )
-
-                                    Text(
-                                        text = "฿${room.price} / night · Capacity ${room.capacity}",
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    HorizontalDivider()
-
+                    // 1. Check-in date
                     Text(
                         text = "Check-in Date",
                         fontWeight = FontWeight.Bold
                     )
 
-                    // แก้ไขจุดที่ 1: ห่อ OutlinedTextField ด้วย Box เพื่อให้กดได้ทั้งพื้นที่
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        OutlinedTextField(
-                            value = checkInDate,
-                            onValueChange = {},
-                            readOnly = true,
-                            enabled = false, // ปิดการพิมพ์เพื่อรับ event จาก Box ชัดเจน
-                            placeholder = {
-                                Text("Select check-in date")
+                    OutlinedTextField(
+                        value = checkInDate,
+                        onValueChange = {},
+                        readOnly = true,
+                        placeholder = {
+                            Text("Select check-in date")
+                        },
+                        trailingIcon = {
+                            TextButton(
+                                onClick = {
+                                    showDatePicker = true
+                                }
+                            ) {
+                                Icon(painterResource(R.drawable.calendar__2_),
+                                    contentDescription = "date", modifier = Modifier.size(24.dp))
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showDatePicker = true
                             },
-                            trailingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.bookmark),
-                                    contentDescription = "Select date"
-                                )
-                            },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true
-                        )
-                        // Overlay สำหรับดัก Event การคลิกทั้งช่อง
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .clickable { showDatePicker = true }
-                        )
-                    }
+                        singleLine = true
+                    )
 
+                    // 2. Number of nights
                     Text(
                         text = "Number of Nights",
                         fontWeight = FontWeight.Bold
@@ -280,23 +234,17 @@ fun HomeScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text("Nights") }
+                        label = {
+                            Text("Nights")
+                        }
                     )
-
-                    val nights = nightsText.toIntOrNull() ?: 0
-
-                    if (selectedRoom != null && nights > 0) {
-                        Text(
-                            text = "Total: ฿${selectedRoom!!.price * nights}",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                    }
 
                     if (bookingMessage.isNotBlank()) {
                         Text(
                             text = bookingMessage,
-                            color = if (bookingMessage == "Booking successful!") {
+                            color = if (
+                                bookingMessage == "Booking successful!"
+                            ) {
                                 MaterialTheme.colorScheme.primary
                             } else {
                                 MaterialTheme.colorScheme.error
@@ -307,23 +255,18 @@ fun HomeScreen(
             },
             confirmButton = {
                 Button(
-                    enabled = selectedRoom != null &&
-                            checkInDate.isNotBlank() &&
+                    enabled = checkInDate.isNotBlank() &&
                             (nightsText.toIntOrNull() ?: 0) > 0 &&
                             !isBooking,
                     onClick = {
-                        val room = selectedRoom
                         val nights = nightsText.toIntOrNull() ?: 0
 
-                        if (room != null &&
-                            checkInDate.isNotBlank() &&
-                            nights > 0
-                        ) {
+                        if (checkInDate.isNotBlank() && nights > 0) {
                             isBooking = true
                             bookingMessage = ""
 
                             hotelVM.bookHotel(
-                                hotelName = "${hotel.name} (${room.roomType})",
+                                hotelName = hotel.name,
                                 checkInDate = checkInDate,
                                 nights = nights
                             ) { success ->
@@ -351,7 +294,9 @@ fun HomeScreen(
             dismissButton = {
                 TextButton(
                     enabled = !isBooking,
-                    onClick = { selectedHotel = null }
+                    onClick = {
+                        selectedHotel = null
+                    }
                 ) {
                     Text("Close")
                 }
@@ -359,7 +304,7 @@ fun HomeScreen(
         )
     }
 
-    // แก้ไขจุดที่ 2 & 3: จัดการ DatePickerState ให้อัปเดตได้ถูกต้อง
+    // Date Picker
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState()
 
@@ -390,7 +335,9 @@ fun HomeScreen(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { showDatePicker = false }
+                    onClick = {
+                        showDatePicker = false
+                    }
                 ) {
                     Text("Cancel")
                 }
@@ -400,7 +347,3 @@ fun HomeScreen(
         }
     }
 }
-
-
-
-
