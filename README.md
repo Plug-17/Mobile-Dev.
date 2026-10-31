@@ -7,8 +7,8 @@
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white">
 </p>
 
-<br>
 ## รายละเอียดโปรเจค
+<br>
 โปรเจคนี้เป็นส่วนหนึ่งของวิชา Mobile Application Design and Development 
 รหัสวิชา 01418342 พวกเราได้ทำการพัฒนา Android Application 
 โดยใช้ภาษา Kotlin และ Jetpack Compose UI ในการพัฒนาแอปพลิเคชัน 
