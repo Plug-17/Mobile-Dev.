@@ -118,6 +118,8 @@ fun HotelBookingApp() {
                 composable("Profile"){
                     ProfileScreen(Modifier.padding(innerPadding), {navController.navigate("Login")})
                 }
+                composable("chatai") { ChatScreen()}
+
             }
         }
     }
@@ -130,6 +132,7 @@ enum class AppDestinations(
     HOME("Home", R.drawable.ic_home),
     HISTORY("History", R.drawable.bookmark),
     PROFILE("Profile", R.drawable.ic_account_box),
+    CHATAI("chatai", R.drawable.agents)
 }
 
 @Composable
